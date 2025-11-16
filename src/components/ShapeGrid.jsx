@@ -3,15 +3,15 @@ import { Context as ShapeDataContext } from "../context/ShapeDataContext";
 
 const ShapeGrid = () => {
   const { state: { selectedShape } } = useContext(ShapeDataContext);
-
   const canvasRef = useRef(null);
+
   const size = 10;
-  const cellSize = 40; // pixels
+  const cellSize = 40;
 
-  // Store grid state: array of rows of { value, occupied }
   const [grid, setGrid] = useState([]);
+  const [hoverPos, setHoverPos] = useState({ gx: -1, gy: -1 });
 
-  // Initialize the grid
+  // Initialize grid
   useEffect(() => {
     const newGrid = [];
     for (let y = 0; y < size; y++) {
@@ -26,9 +26,10 @@ const ShapeGrid = () => {
     setGrid(newGrid);
   }, []);
 
-  // Draw the grid
+  // Draw grid with hover highlight
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
     canvas.width = size * cellSize;
     canvas.height = size * cellSize;
@@ -40,53 +41,79 @@ const ShapeGrid = () => {
 
     grid.forEach((row, y) => {
       row.forEach((cell, x) => {
-        // cell border
         ctx.strokeStyle = "black";
         ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 
-        // fill if occupied
+        // highlight hover cells if any
+        if (selectedShape && hoverPos.gx >= 0 && hoverPos.gy >= 0) {
+          const cells = selectedShape.cells || [[0, 0]];
+          const isHoverCell = cells.some(([cx, cy]) => {
+            const hx = hoverPos.gx + cx;
+            const hy = hoverPos.gy + cy;
+            return hx === x && hy === y;
+          });
+          if (isHoverCell) {
+            const occupied = cells.some(([cx, cy]) => {
+              const hx = hoverPos.gx + cx;
+              const hy = hoverPos.gy + cy;
+              return hy >= 0 && hy < size && hx >= 0 && hx < size && grid[hy][hx].occupied;
+            });
+            ctx.fillStyle = occupied ? "rgba(255,0,0,0.4)" : "rgba(0,255,0,0.4)";
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          }
+        }
+
+        // fill if already occupied
         if (cell.occupied) {
           ctx.fillStyle = "rgba(50, 50, 200, 0.5)";
           ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
 
-        // number
         ctx.fillStyle = "black";
         ctx.fillText(cell.value, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
       });
     });
-  }, [grid]);
+  }, [grid, hoverPos, selectedShape]);
 
-  // --- Handle placing shape ---
-  const handleClick = (e) => {
+  // Update hover position
+  const handleMouseMove = (e) => {
     if (!selectedShape) return;
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
 
-    // mouse position relative to canvas
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    // compute snapped grid position
-    const gx = Math.floor(mouseX / cellSize);
-    const gy = Math.floor(mouseY / cellSize);
+    let gx = Math.floor(mouseX / cellSize);
+    let gy = Math.floor(mouseY / cellSize);
 
-    // get shape dimensions
     const cells = selectedShape.cells || [[0, 0]];
     const shapeWidth = Math.max(...cells.map(c => c[0])) + 1;
     const shapeHeight = Math.max(...cells.map(c => c[1])) + 1;
 
-    // check bounds
-    if (gx + shapeWidth > size || gy + shapeHeight > size) return;
+    gx = Math.max(0, Math.min(size - shapeWidth, gx));
+    gy = Math.max(0, Math.min(size - shapeHeight, gy));
 
-    // check if cells are free
+    setHoverPos({ gx, gy });
+  };
+
+  // Place shape on click
+  const handleClick = (e) => {
+    if (!selectedShape || hoverPos.gx < 0 || hoverPos.gy < 0) return;
+
+    const gx = hoverPos.gx;
+    const gy = hoverPos.gy;
+
+    const cells = selectedShape.cells || [[0, 0]];
+
+    // Check for overlap
     for (let [cx, cy] of cells) {
       const x = gx + cx;
       const y = gy + cy;
-      if (grid[y][x].occupied) return; // cannot place, blocked
+      if (grid[y][x].occupied) return; // blocked
     }
 
-    // calculate score and mark cells as occupied
+    // Place shape and calculate score
     let score = 0;
     const newGrid = grid.map((row, y) =>
       row.map((cell, x) => {
@@ -111,6 +138,7 @@ const ShapeGrid = () => {
       <canvas
         ref={canvasRef}
         className="border border-gray-400 rounded"
+        onMouseMove={handleMouseMove}
         onClick={handleClick}
       />
     </div>
