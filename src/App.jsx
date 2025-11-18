@@ -1,13 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./App.css";
 import ShapeSelector from "./components/ShapeSelector";
 import ShapeGrid from "./components/ShapeGrid";
 import GhostShape from "./components/GhostShape";
 import { Context as ShapeDataContext } from "./context/ShapeDataContext";
+import { Context as GameDataContext } from "./context/GameDataContext";
+import { SHAPES } from "./shapes/shapeDefinitions";
+import {selectRandomUnique} from "./utils/utils"; 
 
 function App() {
   const [selectedShape, setSelectedShape] = useState(null);
+  const { state: {currentPlayerTurn},  setPlayer, setPlayerAvailableShapes} = useContext(GameDataContext);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  //Initialise game settings
+  useEffect(() => {
+    setPlayer("player1");
+    //Get random shapes
+    const player2Shapes = selectRandomUnique(SHAPES,6);
+    console.log("Player 2 Shapes", player2Shapes);
+    setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
+  }, []);
 
   // Track mouse globally
   useEffect(() => {
@@ -55,7 +68,12 @@ function App() {
             zIndex: 999,
           }}
         >
-          <GhostShape shape={selectedShape} x={mousePos.x} y={mousePos.y} cellSize={40} />
+          {
+            currentPlayerTurn
+            ? <GhostShape shape={selectedShape} x={mousePos.x} y={mousePos.y} cellSize={40} />
+            : null
+          }
+          
         </div>
       )}
     </ShapeDataContext.Provider>

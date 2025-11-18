@@ -1,8 +1,11 @@
 import { useEffect, useRef, useContext, useState } from "react";
 import { Context as ShapeDataContext } from "../context/ShapeDataContext";
+import { Context as GameDataContext } from "../context/GameDataContext";
+import { placeRandomShape } from "../logic/placement";
 
 const ShapeGrid = () => {
   const { state: { selectedShape } } = useContext(ShapeDataContext);
+  const { state: { currentPlayerTurn, players }, setCurrentPlayerTurn} = useContext(GameDataContext);
   const canvasRef = useRef(null);
 
   const size = 10;
@@ -115,10 +118,16 @@ const ShapeGrid = () => {
 
     // Place shape and calculate score
     let score = 0;
+    let selectedCells = []
     const newGrid = grid.map((row, y) =>
       row.map((cell, x) => {
         if (cells.some(([cx, cy]) => cx + gx === x && cy + gy === y)) {
           score += cell.value;
+          selectedCells.push({
+            x : x,
+            y : y,
+            val : cell.value
+          });
           return { ...cell, occupied: true };
         }
         return cell;
@@ -127,6 +136,16 @@ const ShapeGrid = () => {
 
     setGrid(newGrid);
     console.log(`Placed shape ${selectedShape.id} at (${gx},${gy}) — Score: ${score}`);
+    console.log("Selected Cells", selectedCells);
+    console.log("New Grid", newGrid);
+    //Update the player object and turn
+    setCurrentPlayerTurn(false);
+    console.log("THE PLAYERS ARE", players);
+    //Get the player 2 move
+    const newGridAfterOtherPlayerPlacement  = placeRandomShape(newGrid, players["player2"].availableShapes);
+    console.log("THE NEW GRID IS ", newGridAfterOtherPlayerPlacement);
+    setGrid(newGridAfterOtherPlayerPlacement);
+
   };
 
   return (
@@ -138,8 +157,8 @@ const ShapeGrid = () => {
       <canvas
         ref={canvasRef}
         className="border border-gray-400 rounded"
-        onMouseMove={handleMouseMove}
-        onClick={handleClick}
+        onMouseMove={ currentPlayerTurn ? handleMouseMove : null } 
+        onClick={ currentPlayerTurn ? handleClick : null }
       />
     </div>
   );
