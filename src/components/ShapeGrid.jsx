@@ -5,7 +5,7 @@ import { placeRandomShape } from "../logic/placement";
 
 const ShapeGrid = () => {
   const { state: { selectedShape } } = useContext(ShapeDataContext);
-  const { state: { currentPlayerTurn, players }, setCurrentPlayerTurn} = useContext(GameDataContext);
+  const { state: { player, currentPlayerTurn, players }, setCurrentPlayerTurn, addPlayerTurnAndUpdateScore} = useContext(GameDataContext);
   const canvasRef = useRef(null);
 
   const size = 10;
@@ -137,14 +137,28 @@ const ShapeGrid = () => {
     setGrid(newGrid);
     console.log(`Placed shape ${selectedShape.id} at (${gx},${gy}) — Score: ${score}`);
     console.log("Selected Cells", selectedCells);
+    const turn = {
+      shapeId : selectedShape.id,
+      selectedCells,
+      score
+    };
+    addPlayerTurnAndUpdateScore({player, turn});
     console.log("New Grid", newGrid);
     //Update the player object and turn
     setCurrentPlayerTurn(false);
-    console.log("THE PLAYERS ARE", players);
+    
     //Get the player 2 move
-    const newGridAfterOtherPlayerPlacement  = placeRandomShape(newGrid, players["player2"].availableShapes);
-    console.log("THE NEW GRID IS ", newGridAfterOtherPlayerPlacement);
-    setGrid(newGridAfterOtherPlayerPlacement);
+    const player2Turn  = placeRandomShape(newGrid, players["player2"].availableShapes);
+    console.log("THE NEW GRID IS ", player2Turn);
+    //Store the player 2 turn
+    addPlayerTurnAndUpdateScore({player:"player2", turn : {
+      shapeId : player2Turn.shapeId,
+      selectedCells : player2Turn.selectedCells,
+      score : player2Turn.score,
+    }});
+    console.log("THE PLAYERS ARE", players);
+    setGrid(player2Turn.grid);
+    setCurrentPlayerTurn(true);
 
   };
 

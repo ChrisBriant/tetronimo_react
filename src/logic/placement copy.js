@@ -41,19 +41,10 @@ function findRandomPlacement(grid, shapes) {
 
         for (let gy = 0; gy < rows; gy++) {
             for (let gx = 0; gx < cols; gx++) {
-
                 if (canPlaceShape(grid, shapeCells, gx, gy)) {
-
-                    // Build absolute coordinates for scoring and return
-                    const absoluteCells = shapeCells.map(c => ({
-                        x: gx + c.x,
-                        y: gy + c.y
-                    }));
-
                     return {
                         id: shape.id,
-                        cells: shapeCells,       // relative cells
-                        absCells: absoluteCells, // absolute cells
+                        cells: shapeCells,
                         x: gx,
                         y: gy
                     };
@@ -68,50 +59,21 @@ function findRandomPlacement(grid, shapes) {
 function applyPlacement(grid, placement) {
     if (!placement) return null;
 
-    const { absCells } = placement;
+    const { cells, x, y } = placement;
 
     const newGrid = grid.map(row =>
         row.map(cell => ({ ...cell }))
     );
 
-    let score = 0;
-    let selectedCells = []
-    for (const cell of absCells) {
-        const gCell = newGrid[cell.y][cell.x];
-        gCell.occupied = true;
-
-        // Add score from grid values
-        if (typeof gCell.value === "number") {
-            score += gCell.value;
-            selectedCells.push({
-                x : cell.x,
-                y : cell.y,
-                val : gCell.value
-            });
-        }
+    for (const c of cells) {
+        newGrid[y + c.y][x + c.x].occupied = true;
     }
 
-    return {
-        grid: newGrid,
-        absCells,
-        selectedCells,
-        score
-    };
+    return newGrid;
 }
 
 export function placeRandomShape(grid, shapes) {
     const placement = findRandomPlacement(grid, shapes);
     if (!placement) return null;
-
-    const result = applyPlacement(grid, placement);
-
-    return {
-        shapeId: placement.id,
-        placementX: placement.x,
-        placementY: placement.y,
-        absCells: result.absCells,
-        selectedCells : result.selectedCells,
-        score: result.score,
-        grid: result.grid
-    };
+    return applyPlacement(grid, placement);
 }
