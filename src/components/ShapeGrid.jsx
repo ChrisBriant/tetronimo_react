@@ -135,21 +135,19 @@ const ShapeGrid = () => {
     );
 
     setGrid(newGrid);
-    console.log(`Placed shape ${selectedShape.id} at (${gx},${gy}) — Score: ${score}`);
-    console.log("Selected Cells", selectedCells);
+    // console.log(`Placed shape ${selectedShape.id} at (${gx},${gy}) — Score: ${score}`);
+    // console.log("Selected Cells", selectedCells);
     const turn = {
       shapeId : selectedShape.id,
       selectedCells,
       score
     };
     addPlayerTurnAndUpdateScore({player, turn});
-    console.log("New Grid", newGrid);
     //Update the player object and turn
     setCurrentPlayerTurn(false);
     
     //Get the player 2 move
     const player2Turn  = placeRandomShape(newGrid, players["player2"].availableShapes);
-    console.log("THE NEW GRID IS ", player2Turn);
     //Store the player 2 turn
     addPlayerTurnAndUpdateScore({player:"player2", turn : {
       shapeId : player2Turn.shapeId,
