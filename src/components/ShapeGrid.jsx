@@ -14,6 +14,8 @@ const ShapeGrid = () => {
   const [grid, setGrid] = useState([]);
   const [hoverPos, setHoverPos] = useState({ gx: -1, gy: -1 });
 
+  const player1Color = "rgba(50, 50, 200, 0.5)";
+
   // Initialize grid
   useEffect(() => {
     const newGrid = [];
@@ -68,7 +70,8 @@ const ShapeGrid = () => {
 
         // fill if already occupied
         if (cell.occupied) {
-          ctx.fillStyle = "rgba(50, 50, 200, 0.5)";
+          //ctx.fillStyle = "rgba(50, 50, 200, 0.5)";
+          ctx.fillStyle = cell.color;
           ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
 
@@ -128,7 +131,7 @@ const ShapeGrid = () => {
             y : y,
             val : cell.value
           });
-          return { ...cell, occupied: true };
+          return { ...cell, occupied: true, color: player1Color  };
         }
         return cell;
       })
@@ -149,14 +152,20 @@ const ShapeGrid = () => {
     //Get the player 2 move
     const player2Turn  = placeRandomShape(newGrid, players["player2"].availableShapes);
     //Store the player 2 turn
-    addPlayerTurnAndUpdateScore({player:"player2", turn : {
-      shapeId : player2Turn.shapeId,
-      selectedCells : player2Turn.selectedCells,
-      score : player2Turn.score,
-    }});
-    console.log("THE PLAYERS ARE", players);
-    setGrid(player2Turn.grid);
+    if(player2Turn) {
+      addPlayerTurnAndUpdateScore({player:"player2", turn : {
+        shapeId : player2Turn.shapeId,
+        selectedCells : player2Turn.selectedCells,
+        score : player2Turn.score,
+      }});
+      setGrid(player2Turn.grid);
+    } else {
+      //Player 2 cannot go - needs to handle last turn
+      console.log("PLAYER 2 NO MORE TURNS");
+    }
     setCurrentPlayerTurn(true);
+    console.log("THE PLAYERS ARE", players);
+
 
   };
 

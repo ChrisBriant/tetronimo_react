@@ -1,3 +1,5 @@
+const player2Color = "rgba(145, 50, 200, 0.5)";
+
 function shuffle(array) {
     const copy = [...array];
     for (let i = copy.length - 1; i > 0; i--) {
@@ -79,6 +81,7 @@ function applyPlacement(grid, placement) {
     for (const cell of absCells) {
         const gCell = newGrid[cell.y][cell.x];
         gCell.occupied = true;
+        gCell.color = player2Color;
 
         // Add score from grid values
         if (typeof gCell.value === "number") {

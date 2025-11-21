@@ -6,13 +6,13 @@ const defaultState = {
   players : {
     "player1" : {
       name : "player1",
-      turn : null,
+      turns : [],
       availableShapes : null,
       score : 0,
     },
     "player2" : {
       name : "player2",
-      turn : null,
+      turns : [],
       availableShapes : null,
       score : 0,
     },
@@ -34,7 +34,8 @@ const gameDataReducer = (state,action) => {
     case 'addPlayerTurnAndUpdateScore':
       //TODO : Needs to add to an array of turns
       const newScore = newPlayers[action.payload.player].score + action.payload.turn.score;
-      newPlayers[action.payload.player].turn = action.payload.turn;
+      const newTurns = [...state.players[action.payload.player].turns,action.payload.turn];
+      newPlayers[action.payload.player].turns = newTurns;
       newPlayers[action.payload.player].score = newScore;
       console.log("THESE ARE NEW PLAYERS", newPlayers);
       return {...state,players:newPlayers};
