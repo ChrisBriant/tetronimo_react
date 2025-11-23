@@ -17,6 +17,7 @@ const defaultState = {
       score : 0,
     },
   },
+  grid : [],
 }
 
 
@@ -39,6 +40,8 @@ const gameDataReducer = (state,action) => {
       newPlayers[action.payload.player].score = newScore;
       console.log("THESE ARE NEW PLAYERS", newPlayers);
       return {...state,players:newPlayers};
+    case 'setGrid':
+       return {...state,grid:action.payload};
     default:
       return defaultState;
   }
@@ -63,9 +66,14 @@ const setPlayerAvailableShapes = (dispatch) => (data) => {
 const addPlayerTurnAndUpdateScore = (dispatch) => (data) => {
   dispatch({type:'addPlayerTurnAndUpdateScore', payload:data});
 }
+
+const setGrid = (dispatch) => (data) => {
+  dispatch({type:'setGrid', payload:data});
+}
+ 
  
 export const {Provider, Context} = createDataContext (
     gameDataReducer,
-    { setCurrentPlayerTurn, setPlayer, setPlayerAvailableShapes, addPlayerTurnAndUpdateScore},
+    { setCurrentPlayerTurn, setPlayer, setPlayerAvailableShapes, addPlayerTurnAndUpdateScore,setGrid},
     {...defaultState}
 );

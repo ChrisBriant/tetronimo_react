@@ -10,7 +10,7 @@ import {selectRandomUnique} from "./utils/utils";
 
 function App() {
   const [selectedShape, setSelectedShape] = useState(null);
-  const { state: {currentPlayerTurn},  setPlayer, setPlayerAvailableShapes} = useContext(GameDataContext);
+  const { state: {currentPlayerTurn,players, grid},  setPlayer, setPlayerAvailableShapes} = useContext(GameDataContext);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   //Initialise game settings
@@ -18,8 +18,10 @@ function App() {
     setPlayer("player1");
     //Get random shapes
     const player2Shapes = selectRandomUnique(SHAPES,6);
+    const player1Shapes = selectRandomUnique(SHAPES,2);
     console.log("Player 2 Shapes", player2Shapes);
     setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
+    setPlayerAvailableShapes({player: "player1", shapes: player1Shapes});
   }, []);
 
   // Track mouse globally
@@ -53,7 +55,9 @@ function App() {
     <ShapeDataContext.Provider value={{ state: { selectedShape }, setSelectedShape }}>
       <h1>Hello</h1>
       <div id="interactive-panel">
-        <ShapeSelector />
+        {
+          players.player1.availableShapes  && grid ? <ShapeSelector shapes={players.player1.availableShapes} /> : null
+        }        
         <ShapeGrid />
       </div>
 

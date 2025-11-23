@@ -2,18 +2,23 @@ import { useState, useContext } from "react";
 import {Context as ShapeDataContext} from "../context/ShapeDataContext";
 import {Context as GameDataContext} from "../context/GameDataContext";
 import { SHAPES } from "../shapes/shapeDefinitions";
+import { canAnyShapeFit } from "../logic/placement";
 
 const CELL = 20; // square size in px
 
-const ShapeSelector = () => {
+const ShapeSelector = (props) => {
   const [selected, setSelected] = useState(null);
   const {setSelectedShape} = useContext(ShapeDataContext);
-  const {state:{currentPlayerTurn}, setCurrentPlayerTurn} = useContext(GameDataContext);
+  const {state:{currentPlayerTurn, grid}, setCurrentPlayerTurn} = useContext(GameDataContext);
 
   const handleSelect = (shape) => {
     //Block selection if not the player's turn
     console.log('CURRENT PLAYER TURN', currentPlayerTurn);
     if(!currentPlayerTurn) return;
+
+    if(!canAnyShapeFit(grid,props.shapes)) {
+      console.log("PLAYER CANNOT GO");
+    }
     console.log("Shape clicked:", shape);
     setSelected(shape.id);
     setSelectedShape(shape);
@@ -21,7 +26,7 @@ const ShapeSelector = () => {
 
   return (
     <div className="grid grid-cols-4 gap-4 p-4">
-      {SHAPES.map((shape) => {
+      {props.shapes.map((shape) => {
         const { width, height } = shape.getBoundingBox();
 
         return (

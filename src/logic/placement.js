@@ -102,6 +102,30 @@ function applyPlacement(grid, placement) {
     };
 }
 
+
+export function canAnyShapeFit(grid, shapes) {
+    const rows = grid.length;
+    const cols = grid[0].length;
+
+    for (const shape of shapes) {
+        const shapeCells = normalizeShapeCells(shape.cells);
+
+        // Try placing this shape at every grid coordinate
+        for (let gy = 0; gy < rows; gy++) {
+            for (let gx = 0; gx < cols; gx++) {
+
+                if (canPlaceShape(grid, shapeCells, gx, gy)) {
+                    return true; // Found at least one valid placement
+                }
+
+            }
+        }
+    }
+
+    return false; // No valid placement for any shape
+}
+
+
 export function placeRandomShape(grid, shapes) {
     const placement = findRandomPlacement(grid, shapes);
     if (!placement) return null;

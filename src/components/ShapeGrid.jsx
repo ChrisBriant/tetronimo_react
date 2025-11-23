@@ -5,13 +5,13 @@ import { placeRandomShape } from "../logic/placement";
 
 const ShapeGrid = () => {
   const { state: { selectedShape } } = useContext(ShapeDataContext);
-  const { state: { player, currentPlayerTurn, players }, setCurrentPlayerTurn, addPlayerTurnAndUpdateScore} = useContext(GameDataContext);
+  const { state: { player, currentPlayerTurn, players, grid }, setCurrentPlayerTurn, addPlayerTurnAndUpdateScore, setGrid} = useContext(GameDataContext);
   const canvasRef = useRef(null);
 
   const size = 10;
   const cellSize = 40;
 
-  const [grid, setGrid] = useState([]);
+  //const [grid, setGrid] = useState([]);
   const [hoverPos, setHoverPos] = useState({ gx: -1, gy: -1 });
 
   const player1Color = "rgba(50, 50, 200, 0.5)";
