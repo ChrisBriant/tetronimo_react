@@ -7,10 +7,11 @@ import { Context as ShapeDataContext } from "./context/ShapeDataContext";
 import { Context as GameDataContext } from "./context/GameDataContext";
 import { SHAPES } from "./shapes/shapeDefinitions";
 import {selectRandomUnique} from "./utils/utils"; 
+import Overlay from "./components/OverLay";
 
 function App() {
   const [selectedShape, setSelectedShape] = useState(null);
-  const { state: {currentPlayerTurn,players, grid},  setPlayer, setPlayerAvailableShapes} = useContext(GameDataContext);
+  const { state: {currentPlayerTurn,players, grid, showOverlay},  setPlayer, setPlayerAvailableShapes, setOverlayComponent} = useContext(GameDataContext);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   //Initialise game settings
@@ -22,6 +23,7 @@ function App() {
     console.log("Player 2 Shapes", player2Shapes);
     setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
     setPlayerAvailableShapes({player: "player1", shapes: player1Shapes});
+    setOverlayComponent(<ShapeSelector shapes={player1Shapes} />);
   }, []);
 
   // Track mouse globally
@@ -53,8 +55,10 @@ function App() {
 
   return (
     <ShapeDataContext.Provider value={{ state: { selectedShape }, setSelectedShape }}>
+      { showOverlay ? <Overlay /> : null }
       <h1>Hello</h1>
       <div id="interactive-panel">
+        
         {
           players.player1.availableShapes  && grid ? <ShapeSelector shapes={players.player1.availableShapes} /> : null
         }        

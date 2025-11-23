@@ -18,6 +18,8 @@ const defaultState = {
     },
   },
   grid : [],
+  showOverlay : true,
+  overlayComponent : null,
 }
 
 
@@ -42,6 +44,8 @@ const gameDataReducer = (state,action) => {
       return {...state,players:newPlayers};
     case 'setGrid':
        return {...state,grid:action.payload};
+    case 'setOverlayComponent':
+       return {...state,overlayComponent:action.payload};
     default:
       return defaultState;
   }
@@ -70,10 +74,13 @@ const addPlayerTurnAndUpdateScore = (dispatch) => (data) => {
 const setGrid = (dispatch) => (data) => {
   dispatch({type:'setGrid', payload:data});
 }
- 
+
+const setOverlayComponent = (dispatch) => (data) => {
+  dispatch({type:'setOverlayComponent', payload:data});
+}
  
 export const {Provider, Context} = createDataContext (
     gameDataReducer,
-    { setCurrentPlayerTurn, setPlayer, setPlayerAvailableShapes, addPlayerTurnAndUpdateScore,setGrid},
+    { setCurrentPlayerTurn, setPlayer, setPlayerAvailableShapes, addPlayerTurnAndUpdateScore,setGrid, setOverlayComponent},
     {...defaultState}
 );
