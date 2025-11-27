@@ -29,4 +29,12 @@
   background-color: #fff;
   margin: 20% auto;
   border-radius: 10px;
+
+}
+
+#marketPlace {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;   /* important */
+  width: 100%;
 }

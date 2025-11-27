@@ -3,6 +3,7 @@ import {Context as ShapeDataContext} from "../context/ShapeDataContext";
 import {Context as GameDataContext} from "../context/GameDataContext";
 import { SHAPES } from "../shapes/shapeDefinitions";
 import { canAnyShapeFit } from "../logic/placement";
+import ShapeDisplay from "./ShapeDisplay";
 
 const CELL = 20; // square size in px
 
@@ -27,6 +28,7 @@ const ShapeSelector = (props) => {
   return (
     <div className="grid grid-cols-4 gap-4 p-4">
       {props.shapes.map((shape) => {
+        //return <ShapeDisplay key={shape.id} shape={shape} />
         const { width, height } = shape.getBoundingBox();
 
         return (
@@ -38,7 +40,8 @@ const ShapeSelector = (props) => {
             }`}
             style={{ width: width * CELL + 10 }}
           >
-            <div
+            <ShapeDisplay shape={shape} cellSize={CELL} />
+            {/* <div
               style={{
                 position: "relative",
                 width: width * CELL,
@@ -59,7 +62,7 @@ const ShapeSelector = (props) => {
                   }}
                 />
               ))}
-            </div>
+            </div> */}
             <p className="text-sm mt-1 text-center">{shape.id}</p>
           </div>
         );

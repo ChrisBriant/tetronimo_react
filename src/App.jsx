@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import "./App.css";
 import ShapeSelector from "./components/ShapeSelector";
+import MarketPlace from "./components/MarketPlace";
 import ShapeGrid from "./components/ShapeGrid";
 import GhostShape from "./components/GhostShape";
 import { Context as ShapeDataContext } from "./context/ShapeDataContext";
@@ -23,7 +24,7 @@ function App() {
     console.log("Player 2 Shapes", player2Shapes);
     setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
     setPlayerAvailableShapes({player: "player1", shapes: player1Shapes});
-    setOverlayComponent(<ShapeSelector shapes={player1Shapes} />);
+    setOverlayComponent(<MarketPlace shapes={SHAPES} />);
   }, []);
 
   // Track mouse globally
