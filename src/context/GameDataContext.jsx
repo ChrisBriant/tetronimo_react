@@ -8,7 +8,7 @@ const defaultState = {
       name : "player1",
       turns : [],
       availableShapes : null,
-      score : 0,
+      score : 7,
     },
     "player2" : {
       name : "player2",
@@ -32,7 +32,11 @@ const gameDataReducer = (state,action) => {
     case 'setPlayer':
       return {...state,player:action.payload};
     case 'setPlayerAvailableShapes':
+      console.log("BUYING", action.payload);
       newPlayers[action.payload.player].availableShapes = action.payload.shapes;
+      return {...state,players:newPlayers};
+    case 'setPlayerScore':
+      newPlayers[action.payload.player].score = action.payload.score;
       return {...state,players:newPlayers};
     case 'addPlayerTurnAndUpdateScore':
       //TODO : Needs to add to an array of turns
@@ -46,6 +50,8 @@ const gameDataReducer = (state,action) => {
        return {...state,grid:action.payload};
     case 'setOverlayComponent':
        return {...state,overlayComponent:action.payload};
+    case 'setShowOverlay':
+      return {...state,showOverlay:action.payload};
     default:
       return defaultState;
   }
@@ -67,6 +73,10 @@ const setPlayerAvailableShapes = (dispatch) => (data) => {
   dispatch({type:'setPlayerAvailableShapes', payload:data});
 }
 
+const setPlayerScore = (dispatch) => (data) => {
+  dispatch({type:'setPlayerScore', payload:data});
+}
+
 const addPlayerTurnAndUpdateScore = (dispatch) => (data) => {
   dispatch({type:'addPlayerTurnAndUpdateScore', payload:data});
 }
@@ -79,8 +89,12 @@ const setOverlayComponent = (dispatch) => (data) => {
   dispatch({type:'setOverlayComponent', payload:data});
 }
  
+const setShowOverlay = (dispatch) => (data) => {
+  dispatch({type:'setShowOverlay', payload:data});
+}
+ 
 export const {Provider, Context} = createDataContext (
     gameDataReducer,
-    { setCurrentPlayerTurn, setPlayer, setPlayerAvailableShapes, addPlayerTurnAndUpdateScore,setGrid, setOverlayComponent},
+    { setCurrentPlayerTurn, setPlayer, setPlayerAvailableShapes, setPlayerScore, addPlayerTurnAndUpdateScore,setGrid, setOverlayComponent, setShowOverlay},
     {...defaultState}
 );

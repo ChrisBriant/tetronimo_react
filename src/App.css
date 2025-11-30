@@ -32,9 +32,38 @@
 
 }
 
-#marketPlace {
+#marketPlace .shapePanel {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;   /* important */
   width: 100%;
+  padding: 10px;
+}
+
+/* ERRORS  */
+
+.errorDisplay p {
+  color: #b01515;
+}
+
+
+.bg-blue-100 .shapeBlock{
+  background: #2170c4;
+}
+
+.shapeBlock {
+  position: absolute;
+  background: #333;
+  border: 1px solid #999;
+}
+
+.btnGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 10px;
+}
+
+.btnGroup button {
+  margin: 4px 6px;
 }

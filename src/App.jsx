@@ -24,7 +24,7 @@ function App() {
     console.log("Player 2 Shapes", player2Shapes);
     setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
     setPlayerAvailableShapes({player: "player1", shapes: player1Shapes});
-    setOverlayComponent(<MarketPlace shapes={SHAPES} />);
+    setOverlayComponent(<MarketPlace shapes={SHAPES} player={"player1"} />);
   }, []);
 
   // Track mouse globally
@@ -58,6 +58,7 @@ function App() {
     <ShapeDataContext.Provider value={{ state: { selectedShape }, setSelectedShape }}>
       { showOverlay ? <Overlay /> : null }
       <h1>Hello</h1>
+      <h2>Score = {players.player1.score}</h2>
       <div id="interactive-panel">
         
         {

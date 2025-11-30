@@ -34,14 +34,15 @@ const ShapeDisplay = (props) => {
             {props.shape.cells.map(([x, y], index) => (
             <div
                 key={index}
+                className="shapeBlock"
                 style={{
-                position: "absolute",
-                left: x * props.cellSize,
-                top: y * props.cellSize,
-                width: props.cellSize,
-                height: props.cellSize,
-                background: "#333",
-                border: "1px solid #999",
+                    //position: "absolute",
+                    left: x * props.cellSize,
+                    top: y * props.cellSize,
+                    width: props.cellSize,
+                    height: props.cellSize,
+                    // background: "#333",
+                    // border: "1px solid #999",
                 }}
             />
             ))}
