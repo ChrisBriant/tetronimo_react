@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     setPlayer("player1");
     //Get random shapes
-    const player2Shapes = selectRandomUnique(SHAPES,6);
+    const player2Shapes = selectRandomUnique(SHAPES,2);
     const player1Shapes = selectRandomUnique(SHAPES,2);
     console.log("Player 2 Shapes", player2Shapes);
     setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
@@ -65,9 +65,24 @@ function App() {
       <div id="interactive-panel">
         
         {
-          players.player1.availableShapes  && grid ? <ShapeSelector shapes={players.player1.availableShapes} /> : null
+          players.player1.availableShapes  && grid 
+          ? <ShapeSelector 
+            shapes={players.player1.availableShapes}
+            player={players.player1} 
+            playerText="Player 1" 
+            allowInteraction={true} 
+          /> : null
         }        
         <ShapeGrid />
+        {
+          players.player2.availableShapes  && grid 
+          ? <ShapeSelector 
+            shapes={players.player2.availableShapes} 
+            player={players.player2} 
+            playerText="Player 2" 
+            allowInteraction={false} 
+          /> : null
+        }  
       </div>
 
       {/* Ghost shape overlay */}

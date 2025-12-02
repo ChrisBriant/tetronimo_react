@@ -80,6 +80,10 @@
   border-radius: 10px;
 }
 
+.shapeSelector .shape {
+  margin: 10px 4px;
+}
+
 .btn-alt {
   background-color: #2170c4;
   color: #fff;

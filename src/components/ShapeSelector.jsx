@@ -27,6 +27,7 @@ const ShapeSelector = (props) => {
   };
 
   const handleBuyShapes = () => {
+    setSelectedShape(null);
     setShowOverlay(true);
     console.log("CURRENT PLAYER", player );
     //Filters the player's available shapes to remove ones they own
@@ -37,7 +38,8 @@ const ShapeSelector = (props) => {
 
   return (
     <div className="shapeSelector grid grid-cols-4 gap-4 p-4">
-      <h3>My Shapes</h3>
+      <h3>{props.playerText}</h3>
+      <p>Score = {props.player.score}</p>
       {props.shapes.map((shape) => {
         //return <ShapeDisplay key={shape.id} shape={shape} />
         const { width, height } = shape.getBoundingBox();
@@ -45,7 +47,7 @@ const ShapeSelector = (props) => {
         return (
           <div
             key={shape.id}
-            onClick={ currentPlayerTurn ? () => handleSelect(shape) : null }
+            onClick={ currentPlayerTurn && props.allowInteraction ? () => handleSelect(shape) : null }
             className={`border rounded p-2 cursor-pointer hover:bg-gray-100 transition ${
               selected === shape.id ? "bg-blue-100" : ""
             }`}
@@ -78,11 +80,15 @@ const ShapeSelector = (props) => {
           </div>
         );
       })}
-      <button 
-        className="btn-alt" 
-        onClick={() => handleBuyShapes()}
-        disabled={players[player].score < 1 } 
-      >Buy</button>
+      {
+        props.allowInteraction
+        ?<button 
+          className="btn-alt" 
+          onClick={() => handleBuyShapes()}
+          disabled={players[player].score < 1 } 
+        >Buy</button> : null
+      }
+
     </div>
   );
 };
