@@ -24,8 +24,7 @@
 
 .overlayPanel {
   display: flex;
-  width: 60%;
-  height: 60%;
+  width: 40%;
   background-color: #fff;
   margin: 20% auto;
   border-radius: 10px;
@@ -51,6 +50,10 @@
   background: #2170c4;
 }
 
+.shape {
+  margin: 4px;
+}
+
 .shapeBlock {
   position: absolute;
   background: #333;
@@ -66,4 +69,32 @@
 
 .btnGroup button {
   margin: 4px 6px;
+}
+
+/* SHAPESELECTOR STYLES  */
+
+.shapeSelector {
+  margin: 0 10px;
+  padding: 6px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+.btn-alt {
+  background-color: #2170c4;
+  color: #fff;
+  transition: background 1s;
+}
+
+.btn-alt:hover {
+  background-color: #318cee;
+  transition: background 1s;
+}
+
+.btn-alt:disabled {
+  background-color: #999;
+}
+
+.btn-alt:disabled:hover {
+  border-color: #999;
 }

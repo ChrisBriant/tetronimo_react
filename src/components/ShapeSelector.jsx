@@ -4,13 +4,14 @@ import {Context as GameDataContext} from "../context/GameDataContext";
 import { SHAPES } from "../shapes/shapeDefinitions";
 import { canAnyShapeFit } from "../logic/placement";
 import ShapeDisplay from "./ShapeDisplay";
+import MarketPlace from "./MarketPlace";
 
 const CELL = 20; // square size in px
 
 const ShapeSelector = (props) => {
   const [selected, setSelected] = useState(null);
   const {setSelectedShape} = useContext(ShapeDataContext);
-  const {state:{currentPlayerTurn, grid}, setCurrentPlayerTurn} = useContext(GameDataContext);
+  const {state:{currentPlayerTurn, grid, player,players}, setCurrentPlayerTurn, setShowOverlay,setOverlayComponent} = useContext(GameDataContext);
 
   const handleSelect = (shape) => {
     //Block selection if not the player's turn
@@ -25,8 +26,17 @@ const ShapeSelector = (props) => {
     setSelectedShape(shape);
   };
 
+  const handleBuyShapes = () => {
+    setShowOverlay(true);
+    console.log("CURRENT PLAYER", player );
+    const currentPlayerAvailableShapes = players[player].availableShapes;
+    const marketAvailableShapes = SHAPES.filter((shape) => !currentPlayerAvailableShapes.includes(shape));
+    setOverlayComponent(<MarketPlace shapes={marketAvailableShapes} player={player} />);
+  }
+
   return (
-    <div className="grid grid-cols-4 gap-4 p-4">
+    <div className="shapeSelector grid grid-cols-4 gap-4 p-4">
+      <h3>My Shapes</h3>
       {props.shapes.map((shape) => {
         //return <ShapeDisplay key={shape.id} shape={shape} />
         const { width, height } = shape.getBoundingBox();
@@ -63,10 +73,15 @@ const ShapeSelector = (props) => {
                 />
               ))}
             </div> */}
-            <p className="text-sm mt-1 text-center">{shape.id}</p>
+            {/* <p className="text-sm mt-1 text-center">{shape.id}</p> */}
           </div>
         );
       })}
+      <button 
+        className="btn-alt" 
+        onClick={() => handleBuyShapes()}
+        disabled={players[player].score < 1 } 
+      >Buy</button>
     </div>
   );
 };

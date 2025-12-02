@@ -18,7 +18,7 @@ const defaultState = {
     },
   },
   grid : [],
-  showOverlay : true,
+  showOverlay : false,
   overlayComponent : null,
 }
 
@@ -32,7 +32,6 @@ const gameDataReducer = (state,action) => {
     case 'setPlayer':
       return {...state,player:action.payload};
     case 'setPlayerAvailableShapes':
-      console.log("BUYING", action.payload);
       newPlayers[action.payload.player].availableShapes = action.payload.shapes;
       return {...state,players:newPlayers};
     case 'setPlayerScore':

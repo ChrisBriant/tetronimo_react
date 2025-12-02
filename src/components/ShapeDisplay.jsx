@@ -25,10 +25,11 @@ const ShapeDisplay = (props) => {
 
     return (
         <div
+            className = "shape"
             style={{
-            position: "relative",
-            width: width * props.cellSize,
-            height: height * props.cellSize,
+                position: "relative",
+                width: width * props.cellSize,
+                height: height * props.cellSize,
             }}
         >
             {props.shape.cells.map(([x, y], index) => (

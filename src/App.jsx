@@ -24,7 +24,10 @@ function App() {
     console.log("Player 2 Shapes", player2Shapes);
     setPlayerAvailableShapes({player: "player2", shapes: player2Shapes});
     setPlayerAvailableShapes({player: "player1", shapes: player1Shapes});
-    setOverlayComponent(<MarketPlace shapes={SHAPES} player={"player1"} />);
+    //TODO : Needs edit to the shape selector component to include buy button
+    // The buy button needs to launch the marketplace if score is more than 0.
+    // It needs to filter out the shapes the player already owns
+    //setOverlayComponent(<MarketPlace shapes={SHAPES} player={"player1"} />);
   }, []);
 
   // Track mouse globally

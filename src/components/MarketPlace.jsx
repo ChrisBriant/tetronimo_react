@@ -55,7 +55,6 @@ const MarketPlace = (props) => {
         //Update the shapes
         const selectedShapeObjects = props.shapes.filter((shape) => selectedShapes.includes(shape.id));
         const newAvailableShapes = [...players[props.player].availableShapes,...selectedShapeObjects ];
-        console.log("BUYING", newAvailableShapes, props.player);
         setPlayerAvailableShapes( {"player" : props.player, "shapes" : newAvailableShapes});
         //Update the score
         setPlayerScore({"player" : props.player, "score" : credit});
