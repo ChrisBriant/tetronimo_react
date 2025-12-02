@@ -29,6 +29,7 @@ const ShapeSelector = (props) => {
   const handleBuyShapes = () => {
     setShowOverlay(true);
     console.log("CURRENT PLAYER", player );
+    //Filters the player's available shapes to remove ones they own
     const currentPlayerAvailableShapes = players[player].availableShapes;
     const marketAvailableShapes = SHAPES.filter((shape) => !currentPlayerAvailableShapes.includes(shape));
     setOverlayComponent(<MarketPlace shapes={marketAvailableShapes} player={player} />);

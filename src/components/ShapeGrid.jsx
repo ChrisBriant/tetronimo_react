@@ -4,7 +4,7 @@ import { Context as GameDataContext } from "../context/GameDataContext";
 import { placeRandomShape } from "../logic/placement";
 
 const ShapeGrid = () => {
-  const { state: { selectedShape } } = useContext(ShapeDataContext);
+  const { state: { selectedShape }, setSelectedShape } = useContext(ShapeDataContext);
   const { state: { player, currentPlayerTurn, players, grid }, setCurrentPlayerTurn, addPlayerTurnAndUpdateScore, setGrid} = useContext(GameDataContext);
   const canvasRef = useRef(null);
 
@@ -158,6 +158,7 @@ const ShapeGrid = () => {
         selectedCells : player2Turn.selectedCells,
         score : player2Turn.score,
       }});
+      setSelectedShape(null);
       setGrid(player2Turn.grid);
     } else {
       //Player 2 cannot go - needs to handle last turn

@@ -8,12 +8,14 @@ const defaultState = {
       name : "player1",
       turns : [],
       availableShapes : null,
+      selectedShape : null,
       score : 7,
     },
     "player2" : {
       name : "player2",
       turns : [],
       availableShapes : null,
+      selectedShape : null,
       score : 0,
     },
   },
@@ -43,10 +45,17 @@ const gameDataReducer = (state,action) => {
       const newTurns = [...state.players[action.payload.player].turns,action.payload.turn];
       newPlayers[action.payload.player].turns = newTurns;
       newPlayers[action.payload.player].score = newScore;
-      console.log("THESE ARE NEW PLAYERS", newPlayers);
+      //Remove from available shapes
+      const newAvailableShapes = [...newPlayers[action.payload.player].availableShapes].filter((shape) => shape.id !== action.payload.turn.shapeId );
+      newPlayers[action.payload.player].availableShapes = newAvailableShapes;
+      
+      console.log("THESE ARE NEW PLAYERS", newPlayers, action.payload.turn);
       return {...state,players:newPlayers};
     case 'setGrid':
        return {...state,grid:action.payload};
+    // case 'setSelectedShape':
+    //   newPlayers[action.payload.player].selectedShape = action.payload.selectedShape;
+      return {...state,players:newPlayers};
     case 'setOverlayComponent':
        return {...state,overlayComponent:action.payload};
     case 'setShowOverlay':
@@ -91,6 +100,10 @@ const setOverlayComponent = (dispatch) => (data) => {
 const setShowOverlay = (dispatch) => (data) => {
   dispatch({type:'setShowOverlay', payload:data});
 }
+
+// const setSelectedShape = (dispatch) => (data) => {
+//   dispatch({type:'setSelectedShape', payload:data});
+// }
  
 export const {Provider, Context} = createDataContext (
     gameDataReducer,
