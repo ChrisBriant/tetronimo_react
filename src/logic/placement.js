@@ -142,3 +142,106 @@ export function placeRandomShape(grid, shapes) {
         grid: result.grid
     };
 }
+
+
+//AI Market Place Purchase Decisions
+
+// Helper: get shape cost = blocks - 1
+function shapeCost(shape) {
+    return shape.cells.length;
+}
+
+// Helper: generate all 4 rotations
+function getRotations(shape) {
+    const rots = [];
+    let current = shape.cells;
+
+    for (let i = 0; i < 4; i++) {
+        const minX = Math.min(...current.map(c => c[0]));
+        const minY = Math.min(...current.map(c => c[1]));
+        const normalized = current.map(([x, y]) => [x - minX, y - minY]);
+        rots.push(normalized);
+
+        current = current.map(([x, y]) => [y, -x]); // rotate 90°
+    }
+
+    // Remove duplicates
+    const key = r => JSON.stringify(r.sort());
+    const unique = Array.from(new Map(rots.map(r => [key(r), r])).values());
+
+    return unique;
+}
+
+// Check if shape (in a specific rotation) fits at grid position
+function canPlaceAt(grid, rotation, gx, gy) {
+    for (const [dx, dy] of rotation) {
+        const x = gx + dx;
+        const y = gy + dy;
+
+        if (y < 0 || y >= grid.length) return false;
+        if (x < 0 || x >= grid[0].length) return false;
+        if (grid[y][x].occupied) return false;
+    }
+    return true;
+}
+
+// Check whether shape fits anywhere on the board
+function shapeFitsAnywhere(grid, shape) {
+    const rotations = getRotations(shape);
+
+    for (const rot of rotations) {
+        for (let y = 0; y < grid.length; y++) {
+            for (let x = 0; x < grid[0].length; x++) {
+                if (canPlaceAt(grid, rot, x, y)) return true;
+            }
+        }
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------------
+//  MAIN FUNCTION: now returns REAL SHAPE OBJECTS instead of IDs
+// ---------------------------------------------------------------------------
+
+export function chooseShapesToBuy(grid, cpuShapes, marketplaceShapes, score) {
+    const purchasable = marketplaceShapes
+        .map(shape => ({
+            shape,
+            cost: shapeCost(shape),
+            fits: shapeFitsAnywhere(grid, shape),
+            size: shape.cells.length
+        }))
+        .filter(s => s.fits && s.cost <= score);  // MUST: affordable + fits
+
+    if (purchasable.length === 0) return { purchases : [], totalCost : 0 };
+
+    // Score shapes by usefulness
+    for (const p of purchasable) {
+        const sizeFactor = p.size;
+        const efficiency = p.size / p.cost;
+
+        const cpuHasSimilar = cpuShapes.some(s => s.cells.length === p.size);
+        const diversityBonus = cpuHasSimilar ? 0.5 : 1.2;
+
+        p.score =
+            sizeFactor *       // big shapes good
+            efficiency *       // cheap-for-size shapes good
+            diversityBonus;    // avoid duplicates
+    }
+
+    // Best score per cost, descending
+    purchasable.sort((a, b) => (b.score / b.cost) - (a.score / a.cost));
+
+    const purchases = [];
+    let remaining = score;
+    let totalCost = 0;
+
+    for (const p of purchasable) {
+        if (p.cost > remaining) continue;
+        purchases.push(p.shape);  // RETURN FULL SHAPE OBJECT
+        totalCost += p.cost;
+        remaining -= p.cost;
+    }
+
+    return { purchases, totalCost };
+}

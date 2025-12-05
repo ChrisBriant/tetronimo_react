@@ -1,11 +1,18 @@
 import { useEffect, useRef, useContext, useState } from "react";
 import { Context as ShapeDataContext } from "../context/ShapeDataContext";
 import { Context as GameDataContext } from "../context/GameDataContext";
-import { placeRandomShape } from "../logic/placement";
+import { chooseShapesToBuy, placeRandomShape } from "../logic/placement";
+import { SHAPES } from "../shapes/shapeDefinitions";
 
 const ShapeGrid = () => {
   const { state: { selectedShape }, setSelectedShape } = useContext(ShapeDataContext);
-  const { state: { player, currentPlayerTurn, players, grid }, setCurrentPlayerTurn, addPlayerTurnAndUpdateScore, setGrid} = useContext(GameDataContext);
+  const { state: { player, currentPlayerTurn, players, grid }, 
+    setCurrentPlayerTurn, 
+    addPlayerTurnAndUpdateScore, 
+    setGrid,
+    setPlayerAvailableShapes,
+    setPlayerScore
+  } = useContext(GameDataContext);
   const canvasRef = useRef(null);
 
   const size = 10;
@@ -151,6 +158,8 @@ const ShapeGrid = () => {
     
     //Get the player 2 move
     const player2Turn  = placeRandomShape(newGrid, players["player2"].availableShapes);
+    
+
     //Store the player 2 turn
     if(player2Turn) {
       addPlayerTurnAndUpdateScore({player:"player2", turn : {
@@ -158,12 +167,28 @@ const ShapeGrid = () => {
         selectedCells : player2Turn.selectedCells,
         score : player2Turn.score,
       }});
+
+      //NEED AI TO DECIDE PLAYER 2 BUYING SHAPES
+      const player2AvailableShapes = players["player2"].availableShapes.filter((shape) => shape.id !== player2Turn.shapeId);
+      const marketAvailableShapes = SHAPES.filter((shape) => !player2AvailableShapes.includes(shape));
+
+      console.log("GRID AND PLAYER INFO", newGrid,players["player2"].availableShapes, marketAvailableShapes,players["player2"].score , player2Turn.score );
+      const purchasedShapes = chooseShapesToBuy(player2Turn.grid,player2AvailableShapes,marketAvailableShapes,players["player2"].score + player2Turn.score );
+      console.log("PLAYER 2 PURCHASED SHAPES", purchasedShapes);
+      const newAvailableShapes = [...player2AvailableShapes,...purchasedShapes.purchases];
+      setPlayerAvailableShapes( {"player" : "player2", "shapes" : newAvailableShapes});
+      //Update the player score
+      setPlayerScore({"player" : "player2", "score" : (players["player2"].score + player2Turn.score) - purchasedShapes.totalCost});
       setSelectedShape(null);
       setGrid(player2Turn.grid);
+
+
     } else {
       //Player 2 cannot go - needs to handle last turn
       console.log("PLAYER 2 NO MORE TURNS");
     }
+
+
     setCurrentPlayerTurn(true);
     console.log("THE PLAYERS ARE", players);
 
