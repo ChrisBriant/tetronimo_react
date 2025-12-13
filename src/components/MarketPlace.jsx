@@ -4,6 +4,7 @@ import ShapeDisplay from "./ShapeDisplay";
 import ErrorDisplay from "./messaging-components/ErrorDisplay";
 
 const CELL = 20; // square size in px
+const maxAllowedShapes = 3;
 
 const MarketPlace = (props) => {
     const [selectedShapes, setSelectedShapes] = useState([]);
@@ -29,6 +30,12 @@ const MarketPlace = (props) => {
             //Refund
             const newCredit = credit + shapeCost;
             setCredit(newCredit);
+            return;
+        }
+
+        //Check that the max shames is not exceeded
+        if((selectedShapes.length + players[props.player].availableShapes.length) >= maxAllowedShapes) {
+            setErrorMessage(`You can only have a maximum of ${maxAllowedShapes} shapes.`);
             return;
         }
 

@@ -172,7 +172,7 @@ const ShapeGrid = () => {
       const player2AvailableShapes = players["player2"].availableShapes.filter((shape) => shape.id !== player2Turn.shapeId);
       const marketAvailableShapes = SHAPES.filter((shape) => !player2AvailableShapes.includes(shape));
 
-      console.log("GRID AND PLAYER INFO", newGrid,players["player2"].availableShapes, marketAvailableShapes,players["player2"].score , player2Turn.score );
+      console.log("GRID AND PLAYER INFO", newGrid,player2AvailableShapes, marketAvailableShapes,players["player2"].score , player2Turn.score );
       const purchasedShapes = chooseShapesToBuy(player2Turn.grid,player2AvailableShapes,marketAvailableShapes,players["player2"].score + player2Turn.score );
       console.log("PLAYER 2 PURCHASED SHAPES", purchasedShapes);
       const newAvailableShapes = [...player2AvailableShapes,...purchasedShapes.purchases];

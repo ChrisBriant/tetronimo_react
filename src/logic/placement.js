@@ -1,3 +1,4 @@
+const maxAllowedShapes = 3;
 const player2Color = "rgba(145, 50, 200, 0.5)";
 
 function shuffle(array) {
@@ -235,10 +236,15 @@ export function chooseShapesToBuy(grid, cpuShapes, marketplaceShapes, score) {
     const purchases = [];
     let remaining = score;
     let totalCost = 0;
+    let amountOwned = cpuShapes.length;
+
+    console.log("AMOUNT OF SHAPES IN BANK", amountOwned, maxAllowedShapes);
 
     for (const p of purchasable) {
+        if (amountOwned >= maxAllowedShapes) break;
         if (p.cost > remaining) continue;
         purchases.push(p.shape);  // RETURN FULL SHAPE OBJECT
+        amountOwned++;
         totalCost += p.cost;
         remaining -= p.cost;
     }
